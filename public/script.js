@@ -37,12 +37,43 @@ function googleSearch(searchInput) {
                     window.location.href = data.result.link;
                 }, 500);
             } else if (data.message === "Success") {
-                for (let i = 0; i <= 1; i++) {
+                for (let i = 0; i < data.results.length; i++) {
                     const result = data.results[i];
                     displayMessage("Euphoria", `${result.snippet}<br/>(${result.title})<br/><a target="_blank" href="${result.link}" style="color:blueviolet">Click here to view full result on Google</a>`);
                 }
             } else {
                 displayMessage("Euphoria", "No results found");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+        });
+
+}
+
+function imageSearch(searchInput, numOfImages) {
+    if (searchInput.trim() === '') {
+        alert('Please enter a valid search query.');
+        return;
+    }
+    fetch('/imageSearch', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: searchInput }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Success') {
+                for (let i = 0; i < (numOfImages == 1 ? 1 : data.imageResults.length); i++) {
+                    const result = data.imageResults[i];
+                    displayMessage('Euphoria', `Image Result ${i + 1}<br/><img src="${result.thumbnail}" alt="${result.title}" style="border-radius:0.2rem; width:150px; margin-top:0.5rem"/><br/><a target="_blank" href="${result.link}" style="color:blueviolet;" >View full image</a>`);
+
+                }
+            } else {
+                displayMessage('Euphoria', 'No image results found');
             }
         })
         .catch(error => {
@@ -251,13 +282,27 @@ async function sendMessage() {
             return;
         }
 
-        if (formattedQuery.includes('who is your creator') || formattedQuery.includes('who made you') || formattedQuery.includes('who are you made by') || formattedQuery.includes('who is ush') || formattedQuery.includes('who is ushnish') || formattedQuery.includes('ushnish') || formattedQuery == 'ush') {
+        if (formattedQuery.includes('who is your creator') || formattedQuery.includes('who made you') || formattedQuery.includes('who are you made by') || formattedQuery.includes('who is ush') || formattedQuery.includes('who is ushnish') || (formattedQuery.includes('ushnish') && !formattedQuery.includes("image")) || formattedQuery == 'ush') {
             displayMessage("Euphoria", `<a style="color:blueviolet;" href="https://github.com/plushexe351">Ushnish Tapaswi</a> is my creator. Is there anything I can help you with?`);
             return;
         }
 
-        googleSearch(formattedQuery);
-        if (formattedQuery == "clear") { container.innerHTML = ""; return; }
+        if (formattedQuery == "clear") {
+            container.innerHTML = "";
+            return;
+        }
+        if (formattedQuery.includes("image") && (formattedQuery.includes("of") || formattedQuery.includes("generate") || formattedQuery.inclues("show") || formattedQuery.includes("display"))) {
+            let numOfImagesToDisplay = (!formattedQuery.includes("images")) ? "is an image" : "are few images";
+            displayMessage("Euphoria", `Here ${numOfImagesToDisplay} matching your query - ${formattedQuery} :`)
+            setTimeout(() => {
+                numOfImagesToDisplay == "are few images" ? imageSearch(formattedQuery, 0) : imageSearch(formattedQuery, 1);
+            }, 700);
+            return;
+        }
+        setTimeout(() => {
+            googleSearch(formattedQuery);
+        }, 700);
+
     }
 }
 // try {

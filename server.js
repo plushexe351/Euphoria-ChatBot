@@ -54,7 +54,7 @@ app.post('/googleSearch', async (req, res) => {
     const cx = customSearchEngineId;
     const query = req.body.query;
 
-    const googleSearchApiUrl = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${googleSearchApiKey}&cx=${cx}`;
+    const googleSearchApiUrl = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${googleApiKeyFallback}&cx=${cx}`;
 
     try {
         const response = await fetch(googleSearchApiUrl);
@@ -78,6 +78,36 @@ app.post('/googleSearch', async (req, res) => {
         }
     } catch (error) {
         console.error('Error fetching search results from Google:', error.message);
+        res.status(500).json({ error: 'An error occurred while fetching data. Please try again later.' });
+    }
+});
+
+app.post('/imageSearch', async (req, res) => {
+    const query = req.body.query;
+
+    if (!query) {
+        return res.status(400).json({ error: 'Please provide a search query' });
+    }
+
+    const googleSearchApiUrl = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${googleApiKeyFallback}&cx=${customSearchEngineId}&searchType=image`;
+
+    try {
+        const response = await fetch(googleSearchApiUrl);
+        const data = await response.json();
+
+        if (data.items && data.items.length > 0) {
+            const imageResults = data.items.slice(0, 3).map(item => ({
+                title: item.title,
+                link: item.link,
+                thumbnail: item.image.thumbnailLink,
+            }));
+
+            res.json({ message: 'Success', imageResults });
+        } else {
+            res.json({ message: 'No image results found' });
+        }
+    } catch (error) {
+        console.error('Error fetching image search results from Google:', error.message);
         res.status(500).json({ error: 'An error occurred while fetching data. Please try again later.' });
     }
 });
