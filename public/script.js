@@ -2,7 +2,6 @@ const sendBtn = document.querySelector('.send');
 const container = document.querySelector('.container');
 const userMessage = document.querySelector('#userMessage');
 const sampleQueries = document.querySelectorAll('.container > div')
-
 const showHistoryBtn = document.querySelector('.fa-history');
 const historyModal = document.querySelector('.history-modal');
 const historyContainerDOM = document.querySelectorAll('.history-container');
@@ -13,7 +12,6 @@ showHistoryBtn.addEventListener('click', () => {
 
 historyModal.addEventListener('click', () => {
     historyModal.classList.remove('active');
-
 })
 
 function googleSearch(searchInput) {
@@ -211,7 +209,6 @@ function calculate(query) {
 }
 
 function containsMathExpression(query) {
-
     const mathExpressionRegex = /[+\-*/\d()]/;
     return mathExpressionRegex.test(query);
 }
@@ -305,6 +302,17 @@ async function sendMessage() {
 
     }
 }
+
+
+// keyboard support 
+
+document.addEventListener('keydown', (e) => {
+    if (e.key == "Enter") {
+        e.preventDefault();
+        sendMessage();
+    }
+})
+
 // try {
 //     const modelResponse = await fetchOpenAIResponse(query);
 
@@ -369,13 +377,5 @@ async function sendMessage() {
 // }
 
 
-// keyboard support 
-
-document.addEventListener('keydown', (e) => {
-    if (e.key == "Enter") {
-        e.preventDefault();
-        sendMessage();
-    }
-})
 
 
