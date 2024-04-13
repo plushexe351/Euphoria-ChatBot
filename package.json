@@ -1,7 +1,7 @@
 {
-  "name": "euphoria_openai",
+  "name": "euphoria_chatbot",
   "version": "1.0.0",
-  "description": "A chatBot powered by OpenAI API and various other APIs",
+  "description": "A chatBot powered by Google Search JSON API and various other APIs",
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
