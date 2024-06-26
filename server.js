@@ -41,6 +41,9 @@ app.post('/geminiSearch', async (req, res) => {
                 parts: [{ text: `Great to meet you. Sure, i will direct you to use "use /open" to open webpages when you need. How can I help you today?` }],
             },
         ],
+        generationConfig: {
+            maxOutputTokens: 1000,
+        },
 
     });
 

@@ -54,7 +54,7 @@ function googleSearch(searchInput) {
         alert('Please enter a valid search query.');
         return;
     }
-
+    // Make a POST request to the backend
     fetch('/googleSearch', {
         method: 'POST',
         headers: {
@@ -147,7 +147,7 @@ function imageSearch(searchInput, numOfImages) {
 }
 
 
-
+// Display user or chatbot message 
 function searchAndPlay(query) {
     fetch('/searchAndPlay', {
         method: 'POST',
