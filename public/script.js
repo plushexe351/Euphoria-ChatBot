@@ -38,7 +38,7 @@ function openLink(searchInput) {
             } else if (data.message === "Success") {
 
                 // displayMessage("Euphoria", `${result.snippet}<br/>(${result.title})<br/><a target="_blank" href="${result.link}" style="color:#1377ff">Click here to view full result on Google</a>`);
-                displayLink(data.results);
+                displayLinks(data.results);
 
             } else {
                 displayMessage("Euphoria", "No results found");
@@ -381,8 +381,8 @@ async function sendMessage() {
             return;
         }
 
-        if (formattedQuery.includes('who is your creator') || formattedQuery.includes('who made you') || formattedQuery.includes('who are you made by') || formattedQuery.includes('who is ush') || formattedQuery.includes('who is ushnish') || (formattedQuery.includes('ushnish') && !formattedQuery.includes("image")) || formattedQuery == 'ush') {
-            displayMessage("Euphoria", `<a style="color:blueviolet;" href="https://github.com/plushexe351">Ushnish Tapaswi</a> is my creator. Is there anything I can help you with?`);
+        if (formattedQuery.includes('who is your creator') || formattedQuery.includes('who made you') || formattedQuery.includes('who created you') || formattedQuery.includes('who are you made by') || formattedQuery.includes('who is ush') || formattedQuery.includes('who is ushnish') || (formattedQuery.includes('ushnish') && !formattedQuery.includes("image")) || formattedQuery == 'ush') {
+            displayMessage("Euphoria", `☂️<a style="color:blueviolet; font-weight:300; font-size:2rem; font-family:dotty" href="https://github.com/plushexe351"> Ushnish Tapaswi</a> is my creator. Is there anything I can help you with?`);
             return;
         }
 
@@ -418,68 +418,7 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
-// try {
-//     const modelResponse = await fetchOpenAIResponse(query);
 
-//     // Display model response in the chat log
-
-//     displayMessage("Euphoria", modelResponse);
-
-// } catch (error) {
-
-//     console.error("Error fetching response from OpenAI:", error);
-
-// const googleSearchApiUrl = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${googleSearchApiKey}&cx=${cx}`;
-
-// try {
-//     const response = await fetch(googleSearchApiUrl);
-//     const data = await response.json();
-
-//     if (data.items && data.items.length > 0) {
-//         for (let i = 0; i < Math.min(2, data.items.length); i++) {
-//             const result = data.items[i];
-//             const title = result.title;
-//             const snippet = result.snippet;
-//             const link = result.link;
-
-//             console.log(snippet);
-
-//             if (formattedQuery.includes('open') && !formattedQuery.includes('openai')) {
-//                 displayMessage("Euphoria", "Opening...")
-//                 setTimeout(() => {
-//                     window.location.href = link;
-//                 }, 500);
-//                 return;
-//             }
-
-//             displayMessage("Euphoria", `${snippet}` + `<br/>(${title})` + `<br/><a target="_blank" href="${link}" style="color:blueviolet">Click here to view full result on Google</a>`);
-//         }
-//     }
-// } catch (error) {
-//     console.error('Error fetching search results from Google:', error.message);
-// }
-// }
-
-
-// fetch openAI response
-
-// async function fetchOpenAIResponse(prompt) {
-//     const apiUrl = "https://api.openai.com/v1/engines/davinci/completions";
-//     const response = await fetch(apiUrl, {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${openAiApiKey}`,
-//         },
-//         body: JSON.stringify({
-//             prompt: prompt,
-//             max_tokens: 100,
-//         }),
-//     });
-
-//     const data = await response.json();
-//     return data.choices[0].text.trim();
-// }
 
 
 
