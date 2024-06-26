@@ -54,7 +54,7 @@ function googleSearch(searchInput) {
         alert('Please enter a valid search query.');
         return;
     }
-    // Make a POST request to the backend
+
     fetch('/googleSearch', {
         method: 'POST',
         headers: {
@@ -147,7 +147,7 @@ function imageSearch(searchInput, numOfImages) {
 }
 
 
-// Display user or chatbot message 
+
 function searchAndPlay(query) {
     fetch('/searchAndPlay', {
         method: 'POST',
@@ -197,14 +197,14 @@ function displayMessage(user, message) {
     newMessage.classList.add('newMessage');
     const username = document.createElement('h3');
     const timestamp = document.createElement('p');
-    const messageContent = document.createElement('div');  // Change this to a div
+    const messageContent = document.createElement('div');
     const time = new Date().toLocaleTimeString();
     const day = new Date().toLocaleDateString();
 
     timestamp.classList.add('time');
     messageContent.classList.add('message');
     username.textContent = user;
-    messageContent.innerHTML = user == "You" ? message : marked.parse(message);  // Parse the message as Markdown
+    messageContent.innerHTML = user == "You" ? message : marked.parse(message);
     timestamp.textContent = time;
 
     newMessage.appendChild(username);
@@ -213,8 +213,8 @@ function displayMessage(user, message) {
     container.appendChild(newMessage);
 
     newMessage.scrollIntoView({
-        behavior: 'smooth', // This will animate the scroll
-        block: 'start',     // Align the element to the start of the scrollable area
+        behavior: 'smooth',
+        block: 'start',
         inline: 'nearest'
     })
 
@@ -264,7 +264,6 @@ function displayMessage(user, message) {
     }
 }
 
-// ... other code ...
 
 
 // Send sample queries
@@ -418,68 +417,6 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
-// try {
-//     const modelResponse = await fetchOpenAIResponse(query);
-
-//     // Display model response in the chat log
-
-//     displayMessage("Euphoria", modelResponse);
-
-// } catch (error) {
-
-//     console.error("Error fetching response from OpenAI:", error);
-
-// const googleSearchApiUrl = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${googleSearchApiKey}&cx=${cx}`;
-
-// try {
-//     const response = await fetch(googleSearchApiUrl);
-//     const data = await response.json();
-
-//     if (data.items && data.items.length > 0) {
-//         for (let i = 0; i < Math.min(2, data.items.length); i++) {
-//             const result = data.items[i];
-//             const title = result.title;
-//             const snippet = result.snippet;
-//             const link = result.link;
-
-//             console.log(snippet);
-
-//             if (formattedQuery.includes('open') && !formattedQuery.includes('openai')) {
-//                 displayMessage("Euphoria", "Opening...")
-//                 setTimeout(() => {
-//                     window.location.href = link;
-//                 }, 500);
-//                 return;
-//             }
-
-//             displayMessage("Euphoria", `${snippet}` + `<br/>(${title})` + `<br/><a target="_blank" href="${link}" style="color:blueviolet">Click here to view full result on Google</a>`);
-//         }
-//     }
-// } catch (error) {
-//     console.error('Error fetching search results from Google:', error.message);
-// }
-// }
-
-
-// fetch openAI response
-
-// async function fetchOpenAIResponse(prompt) {
-//     const apiUrl = "https://api.openai.com/v1/engines/davinci/completions";
-//     const response = await fetch(apiUrl, {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${openAiApiKey}`,
-//         },
-//         body: JSON.stringify({
-//             prompt: prompt,
-//             max_tokens: 100,
-//         }),
-//     });
-
-//     const data = await response.json();
-//     return data.choices[0].text.trim();
-// }
 
 
 
