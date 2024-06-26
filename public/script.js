@@ -72,7 +72,7 @@ function googleSearch(searchInput) {
             } else if (data.message === "Success") {
 
                 // displayMessage("Euphoria", `${result.snippet}<br/>(${result.title})<br/><a target="_blank" href="${result.link}" style="color:#1377ff">Click here to view full result on Google</a>`);
-                displayLink(data.results);
+                displayLinks(data.results);
 
             } else {
                 displayMessage("Euphoria", "No results found");
@@ -173,11 +173,12 @@ function searchAndPlay(query) {
         });
 }
 // ... other code ...
-function displayLink(results) {
+function displayLinks(results) {
     const linkContainer = document.createElement('section');
     linkContainer.classList.add('linkContainer')
     const title = document.createElement('p');
-    title.textContent = "Here are some links you might like...";
+    const linkTitle = ["Here are some links you might like", "You might like these...", "You might wanna check these out"]
+    title.textContent = "🔗 " + linkTitle[Math.floor(Math.random() * linkTitle.length)];
     title.classList.add('googleSearchResultLinksTitle');
     linkContainer.appendChild(title);
 

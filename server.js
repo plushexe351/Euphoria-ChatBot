@@ -25,40 +25,58 @@ const customSearchEngineId = process.env.CUSTOM_SEARCH_ENGINE_ID;
 const youtubeApiKey = process.env.YOUTUBE_API_KEY;
 const { GoogleGenerativeAI } = require('@google/generative-ai')
 
+const chatHistory = [
+    {
+        role: "user",
+        parts: [{ text: `you're a chatbot here to assist me. Say "use /open" when I ask you to open something and if i use"/open", then say nothing` }],
+    },
+    {
+        role: "model",
+        parts: [{ text: `Great to meet you. Sure, i will direct you to use "use /open" to open webpages when you need. How can I help you today?` }],
+    },
+];
+
+function appendToChatHistory(role, msg) {
+    chatHistory.push(
+        {
+            role: role,
+            parts: [{ text: msg }]
+        })
+}
+
+const genAI = new GoogleGenerativeAI("AIzaSyBM4VjictreZGjd4NplDnb06ETrImsAKxU");
+
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const chat = model.startChat({
+    history: chatHistory,
+    generationConfig: {
+        maxOutputTokens: 1000,
+    },
+
+});
+
 app.post('/geminiSearch', async (req, res) => {
-    const genAI = new GoogleGenerativeAI("AIzaSyBM4VjictreZGjd4NplDnb06ETrImsAKxU");
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     let query = req.body.query;
-    const chat = model.startChat({
-        history: [
-            {
-                role: "user",
-                parts: [{ text: `you're a chatbot here to assist me. Say "use /open" when I ask you to open something and if i use"/open", then say nothing` }],
-            },
-            {
-                role: "model",
-                parts: [{ text: `Great to meet you. Sure, i will direct you to use "use /open" to open webpages when you need. How can I help you today?` }],
-            },
-        ],
-        generationConfig: {
-            maxOutputTokens: 1000,
-        },
-
-    });
 
     const msg = query;
+    appendToChatHistory("user", msg);
+
     const result = await chat.sendMessageStream(msg);
 
     let text = '';
+
     for await (const chunk of result.stream) {
         const chunkText = chunk.text();
         console.log(chunkText);
         text += chunkText;
     }
+    appendToChatHistory("model", text);
+
     res.json({
         text
     })
+
 });
 
 
