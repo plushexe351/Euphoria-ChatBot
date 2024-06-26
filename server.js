@@ -109,7 +109,7 @@ app.post('/googleSearch', async (req, res) => {
 
             res.json({ message: "Success", results });
         } else {
-            res.json({ message: "No google results found" });
+            res.json({ message: "No results found" });
         }
     } catch (error) {
         console.error('Error fetching search results from Google:', error.message);
