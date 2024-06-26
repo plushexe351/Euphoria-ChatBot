@@ -56,28 +56,28 @@ const chat = model.startChat({
 });
 
 app.post('/geminiSearch', async (req, res) => {
-
     let query = req.body.query;
-
     const msg = query;
     appendToChatHistory("user", msg);
 
-    const result = await chat.sendMessageStream(msg);
+    try {
+        const result = await chat.sendMessageStream(msg);
+        let text = '';
 
-    let text = '';
+        for await (const chunk of result.stream) {
+            const chunkText = chunk.text();
+            // console.log(chunkText);
+            text += chunkText;
+        }
+        appendToChatHistory("model", text);
 
-    for await (const chunk of result.stream) {
-        const chunkText = chunk.text();
-        console.log(chunkText);
-        text += chunkText;
+        res.json({ text });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while processing the request.' });
     }
-    appendToChatHistory("model", text);
-
-    res.json({
-        text
-    })
-
 });
+
 
 
 app.post('/searchAndPlay', async (req, res) => {
