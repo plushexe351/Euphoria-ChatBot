@@ -75,7 +75,7 @@ function googleSearch(searchInput) {
                 displayLink(data.results);
 
             } else {
-                displayMessage("Euphoria", "No results found");
+                displayMessage("Euphoria", "No google results found");
             }
         })
         .catch(error => {
