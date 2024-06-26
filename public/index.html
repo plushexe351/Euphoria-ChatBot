@@ -19,39 +19,62 @@
     <title>Euphoria</title>
   </head>
   <body>
-    <!-- <p class="title">
+    <p class="title">
       Powered by
-      <a href="https://openai.com" target="_blank">
+      <a href="https://openai.com" target="_blank" rel="no-referrer noopener">
         <span class="logo">
-          <img src="logo.png" alt="" />
+          <img src="Gemini-Logo.png" alt="" />
         </span>
-        OpenAI
       </a>
-    </p> -->
+    </p>
     <div title="Show History" class="fa fa-history"></div>
     <div class="label">
       <p>EUPHORIA</p>
     </div>
     <div class="container">
-      <div>
+      <div class="sampleQuery">
+        <div>🦇</div>
         <h3>Who is Batman?</h3>
-        <div class="fa fa-arrow-up" title="click to send"></div>
+        <!-- <div class="fa fa-arrow-up" title="click to send"></div>÷ -->
       </div>
-      <div>
-        <h3>Open Reddit</h3>
-        <div class="fa fa-arrow-up" title="click to send"></div>
+      <div class="sampleQuery">
+        <div>🔗</div>
+        <h3>/open Reddit</h3>
+        <!-- <div class="fa fa-arrow-up" title="click to send"></div>÷ -->
       </div>
-      <div>
+      <div class="sampleQuery">
+        <div>🍕</div>
         <h3>How to make pizza?</h3>
         <p>at home</p>
-        <div class="fa fa-arrow-up" title="click to send"></div>
+        <!-- <div class="fa fa-arrow-up" title="click to send"></div>÷ -->
       </div>
-      <div>
+      <div class="sampleQuery">
+        <div>🐶</div>
         <h3>Generate images</h3>
         <p>of cats and dogs</p>
-        <div class="fa fa-arrow-up" title="click to send"></div>
+        <!-- <div class="fa fa-arrow-up" title="click to send"></div>÷ -->
       </div>
     </div>
+
+    <div class="loader">
+      <div class="circle">
+        <div class="dot"></div>
+        <div class="outline"></div>
+      </div>
+      <div class="circle">
+        <div class="dot"></div>
+        <div class="outline"></div>
+      </div>
+      <div class="circle">
+        <div class="dot"></div>
+        <div class="outline"></div>
+      </div>
+      <div class="circle">
+        <div class="dot"></div>
+        <div class="outline"></div>
+      </div>
+    </div>
+
     <div class="inputbox">
       <input
         type="text"
@@ -59,15 +82,19 @@
         id="userMessage"
         placeholder="Send Message..."
       />
-      <div class="record">
+      <!-- <div class="record">
         <div class="fa fa-microphone"></div>
-      </div>
+      </div> -->
       <btn class="send" onclick="sendMessage()" title="Send Message">
         <div class="fa fa-arrow-up"></div>
       </btn>
     </div>
+    <div class="sensitiveInfoWarning">
+      Euphoria can make mistakes. Check sensitive info.
+    </div>
     <div class="history-modal">
       <h2>History</h2>
+      <a href="#" class="btn-shine">Nothing here yet!</a>
     </div>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.1.0/math.js"
@@ -76,5 +103,7 @@
       referrerpolicy="no-referrer"
     ></script>
     <script src="script.js"></script>
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   </body>
 </html>

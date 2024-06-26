@@ -4,7 +4,10 @@ const userMessage = document.querySelector('#userMessage');
 const sampleQueries = document.querySelectorAll('.container > div')
 const showHistoryBtn = document.querySelector('.fa-history');
 const historyModal = document.querySelector('.history-modal');
+const loader = document.querySelector('.loader');
 const historyContainerDOM = document.querySelectorAll('.history-container');
+
+
 
 showHistoryBtn.addEventListener('click', () => {
     historyModal.classList.toggle('active');
@@ -13,7 +16,39 @@ showHistoryBtn.addEventListener('click', () => {
 historyModal.addEventListener('click', () => {
     historyModal.classList.remove('active');
 })
+function showLoader() {
+    loader.classList.add('show');
+}
 
+function openLink(searchInput) {
+    fetch('/googleSearch', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: searchInput, formattedQuery: searchInput.replace('/open', '') }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === "Opening...") {
+                displayMessage("Euphoria", data.message);
+                setTimeout(() => {
+                    window.location.href = data.result.link;
+                }, 500);
+            } else if (data.message === "Success") {
+
+                // displayMessage("Euphoria", `${result.snippet}<br/>(${result.title})<br/><a target="_blank" href="${result.link}" style="color:#1377ff">Click here to view full result on Google</a>`);
+                displayLink(data.results);
+
+            } else {
+                displayMessage("Euphoria", "No results found");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            displayMessage('Euphoria', error);
+        });
+}
 function googleSearch(searchInput) {
     if (searchInput.trim() === '') {
         alert('Please enter a valid search query.');
@@ -35,19 +70,50 @@ function googleSearch(searchInput) {
                     window.location.href = data.result.link;
                 }, 500);
             } else if (data.message === "Success") {
-                for (let i = 0; i < data.results.length; i++) {
-                    const result = data.results[i];
-                    displayMessage("Euphoria", `${result.snippet}<br/>(${result.title})<br/><a target="_blank" href="${result.link}" style="color:blueviolet">Click here to view full result on Google</a>`);
-                }
+
+                // displayMessage("Euphoria", `${result.snippet}<br/>(${result.title})<br/><a target="_blank" href="${result.link}" style="color:#1377ff">Click here to view full result on Google</a>`);
+                displayLink(data.results);
+
             } else {
                 displayMessage("Euphoria", "No results found");
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred. Please try again later.');
+            displayMessage('Euphoria', error);
         });
 
+}
+function useGemini(searchInput) {
+    showLoader();
+    try {
+
+        fetch('/geminiSearch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query: searchInput }),
+        }).then(response => response.json())
+            .then(data => {
+                displayMessage("Euphoria", data.text);
+
+                googleSearch(searchInput);
+
+            })
+
+            .catch(error => {
+                console.error('Error:', error);
+                displayMessage('Euphoria', error)
+            })
+    }
+    catch (error) {
+        displayMessage('Euphoria', error)
+    }
+    finally {
+        console.log("Gemini search successful")
+
+    }
 }
 
 function imageSearch(searchInput, numOfImages) {
@@ -67,7 +133,7 @@ function imageSearch(searchInput, numOfImages) {
             if (data.message === 'Success') {
                 for (let i = 0; i < (numOfImages == 1 ? 1 : data.imageResults.length); i++) {
                     const result = data.imageResults[i];
-                    displayMessage('Euphoria', `Image Result ${i + 1}<br/><img src="${result.thumbnail}" alt="${result.title}" style="border-radius:0.2rem; width:150px; margin-top:0.5rem"/><br/><a target="_blank" href="${result.link}" style="color:blueviolet;" >View full image</a>`);
+                    displayMessage('Euphoria', `Image Result ${i + 1}<br/><img src="${result.thumbnail}" alt="${result.title}" style="border-radius:0.2rem; width:150px; margin-top:0.5rem"/><br/><a target="_blank" href="${result.link}" style="color:#1377ff;" >View full image</a>`);
 
                 }
             } else {
@@ -106,19 +172,39 @@ function searchAndPlay(query) {
 
         });
 }
-function displayMessage(user, message) {
+// ... other code ...
+function displayLink(results) {
+    const linkContainer = document.createElement('section');
+    linkContainer.classList.add('linkContainer')
+    const title = document.createElement('p');
+    title.textContent = "Here are some links you might like...";
+    title.classList.add('googleSearchResultLinksTitle');
+    linkContainer.appendChild(title);
 
+
+    results.forEach(result => {
+        const link = document.createElement('a');
+        link.textContent = result.title;
+        link.href = result.link;
+        link.classList.add('googleSearchResultLink');
+        linkContainer.appendChild(link);
+    })
+    container?.appendChild(linkContainer);
+
+}
+function displayMessage(user, message) {
     const newMessage = document.createElement('div');
+    newMessage.classList.add('newMessage');
     const username = document.createElement('h3');
     const timestamp = document.createElement('p');
-    const messageContent = document.createElement('p');
+    const messageContent = document.createElement('div');  // Change this to a div
     const time = new Date().toLocaleTimeString();
     const day = new Date().toLocaleDateString();
 
     timestamp.classList.add('time');
     messageContent.classList.add('message');
     username.textContent = user;
-    messageContent.innerHTML = message;
+    messageContent.innerHTML = user == "You" ? message : marked.parse(message);  // Parse the message as Markdown
     timestamp.textContent = time;
 
     newMessage.appendChild(username);
@@ -126,42 +212,60 @@ function displayMessage(user, message) {
     newMessage.appendChild(messageContent);
     container.appendChild(newMessage);
 
-    container.scrollTop = container.scrollHeight;
+    newMessage.scrollIntoView({
+        behavior: 'smooth', // This will animate the scroll
+        block: 'start',     // Align the element to the start of the scrollable area
+        inline: 'nearest'
+    })
 
     // Log History 
-
     if (user == "You") {
+        newMessage.classList.add('userSentMsg');
+        messageContent.classList.add('msgContent');
 
         const historyContainer = document.createElement('div');
         const historyMsg = document.createElement('p');
         const timeAdded = document.createElement('span');
         const dateAdded = document.createElement('span');
+        const dateTimeContainer = document.createElement('div');
 
         historyContainer.classList.add('history-container');
-        dateAdded.classList.add('time-added');
+        dateAdded.classList.add('date-added');
         timeAdded.classList.add('time-added');
+
+        dateTimeContainer.appendChild(dateAdded);
+        dateTimeContainer.appendChild(timeAdded);
+
+        dateTimeContainer.classList.add('date-time');
 
         timeAdded.textContent = time;
         dateAdded.textContent = day.toString();
         historyMsg.textContent = message;
-        historyContainer.appendChild(dateAdded);
-        historyContainer.appendChild(timeAdded);
+
+        const defaultHistoryText = document.querySelector('.btn-shine');
+
+        defaultHistoryText?.remove();
+
+        historyContainer.appendChild(dateTimeContainer)
         historyContainer.appendChild(historyMsg);
         historyModal.appendChild(historyContainer);
         historyContainer.addEventListener('click', () => {
             userMessage.value = historyMsg.textContent;
             historyModal.classList.remove('active');
             sendBtn.click();
-        })
-
+        });
     }
     if (user == 'Euphoria') {
         newMessage.classList.add('highlight');
+        loader?.classList.remove('show');
         setTimeout(() => {
             newMessage.classList.remove('highlight');
         }, 1000);
     }
 }
+
+// ... other code ...
+
 
 // Send sample queries
 
@@ -268,7 +372,7 @@ async function sendMessage() {
             return;
         }
         if (formattedQuery.includes('who are you') || formattedQuery.includes('introduce yourself') || formattedQuery.includes('your introduction')) {
-            displayMessage('Euphoria', `I'm Euphoria, a chatBot powered by OpenAI and various other APIs. Is there anything I can help you with ?`);
+            displayMessage('Euphoria', `I'm Euphoria, a chatBot powered by Google's Gemini AI and various other APIs. Is there anything I can help you with ?`);
             return;
         }
 
@@ -294,9 +398,12 @@ async function sendMessage() {
             }, 700);
             return;
         }
-        setTimeout(() => {
-            googleSearch(formattedQuery);
-        }, 700);
+
+        if (formattedQuery.includes('/open')) {
+            openLink(formattedQuery);
+        }
+        useGemini(formattedQuery);
+
 
     }
 }
