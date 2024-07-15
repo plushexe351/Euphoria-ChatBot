@@ -30,7 +30,7 @@ https: `git clone https://github.com/plushexe351/Euphoria-ChatBot.git`
 
 ssh : `git@github.com:plushexe351/Euphoria-ChatBot.git`
 
-2. Change current directoty to Euphoria-ChatBot
+2. Change current directory to Euphoria-ChatBot
 
 `cd Euphoria-ChatBot`
 
